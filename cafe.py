@@ -195,8 +195,12 @@ def main():
                 case "1":
                     print ("\nВывести информацию по конкретному заказу:")
                     print ("Введите номер заказа:")
-                    order_by_id = OrderDetailsCollection.get_by_orders_id(input())
-                    order_by_id.print_all()
+                    try:
+                        order_id = int(input())
+                        order_by_id = OrderDetailsCollection.get_by_orders_id(order_id)
+                        order_by_id.print_all()
+                    except ValueError:
+                        print("Ошибка: номер заказа должен быть целым числом")
                 case "2":
                     print ("\nСодержимое базы данных с сортировкой по наименованию блюда:")
                     orders_sorted_by_dish_name = OrderDetailsCollection.get_all_sorted_by_dish_name()
