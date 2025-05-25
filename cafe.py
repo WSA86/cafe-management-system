@@ -135,6 +135,17 @@ class OrderDetailsCollection(BaseCollection):
                   f"Order Time: {item.order_time}, Cook Time: {item.cook_time}, "
                   f"Review: {item.review}")
 
+    @staticmethod
+    def get_average_cooking_time():
+        query = OrderDetails.select()
+        total = timedelta()
+        count = 0
+        for order in query:
+            delta = order.cook_datetime - order.order_datetime
+            total += delta
+            count += 1
+        return total / count if count else timedelta(0)
+
 # Класс для добавления новых данных
 class DataAdder:
     @staticmethod
@@ -187,6 +198,7 @@ def main():
             print ("\nВведите цифру от 0 до 5:\n0 - Завершение программы\n1 - Вывести информацию по конкретному заказу")
             print("2 - Содержимое базы данных с сортировкой по наименованию блюда\n3 - Содержимое базы данных с сортировкой по номеру блюда")
             print("4 - Содержимое базы данных с фильтрацией по времени выдачи\n5 - Ввод новых записей в базу данных")
+            print("6 - Среднее время приготовления")
             c = input()
             match c:
                 case "0":
@@ -219,7 +231,11 @@ def main():
                     print(f"Заказ: ID {order_data['order'].orders_id}")
                     print(f"Время заказа: {order_data['order'].order_time}")
                     print(f"Время готовности: {order_data['order'].cook_time}")
-                    print(f"Отзыв: '{order_data['review'].review}'")                
+                    print(f"Отзыв: '{order_data['review'].review}'")
+
+                case "6":
+                    avg_time = OrderDetailsCollection.get_average_cooking_time()
+                    print(f"\nСреднее время приготовления: {avg_time}")
 
     finally:
         conn.close()
